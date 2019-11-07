@@ -1,7 +1,6 @@
 #deploy: sudo apt install xdotool
 #create shortcut
  
-
 import time
 from os.path import expanduser
 import shlex
@@ -18,12 +17,26 @@ window_id=str(result.stdout).replace("\\n'","")
 if not "Shotwell" in window_name:
     quit()
 
-chunks = window_name.split("~/")
-filename = chunks[0].replace("b'","")[:-1].strip()
-folder = "/"+chunks[1].split(" - ")[0][:-1]+"/"
+#print(window_name)
 
-full_filename = expanduser("~")+folder+filename
+window_name = window_name.replace("\n","")
 
+window_name = window_name.replace(") - Shotwell","")
+if " (/" in window_name:
+    chunks = window_name.split(" (/")
+    filename = chunks[0]
+    folder = "/"+chunks[1]+"/"
+elif " (~/" in window_name:
+    chunks = window_name.split(" (~/")
+    filename = chunks[0]
+    folder = expanduser("~")+"/"+chunks[1]+"/"
+else:
+    quit()
+
+
+full_filename = folder+filename
+
+#print(full_filename)
 
 import tkinter as tk
 from tkinter import messagebox
